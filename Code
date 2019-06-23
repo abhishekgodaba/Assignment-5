@@ -1,0 +1,167 @@
+import numpy
+import tensorflow
+from keras.datasets import mnist
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.utils import np_utils
+
+# fix random seed for reproducibility
+seed = 7
+numpy.random.seed(seed)
+
+# load data
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+# flatten 28*28 images to a 784 vector for each image
+num_pixels = X_train.shape[1] * X_train.shape[2]
+X_train = X_train.reshape(X_train.shape[0], num_pixels).astype('float32')
+X_test = X_test.reshape(X_test.shape[0], num_pixels).astype('float32')
+
+# normalize inputs from 0-255 to 0-1
+X_train = X_train / 255
+X_test = X_test / 255
+
+# one hot encode outputs
+y_train = np_utils.to_categorical(y_train)
+y_test = np_utils.to_categorical(y_test)
+num_classes = y_test.shape[1]
+
+# define baseline model
+def baseline_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(num_pixels, input_dim=num_pixels, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(num_classes, kernel_initializer='normal', activation='softmax'))
+	# Compile model
+	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+	return model
+  
+  # build the model
+model = baseline_model()
+# Fit the model
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=200, verbose=2)
+# Final evaluation of the model
+scores = model.evaluate(X_test, y_test, verbose=0)
+print("Baseline Error: %.2f%%" % (100-scores[1]*100))
+
+                                          Train on 60000 samples, validate on 10000 samples
+                                Epoch 1/10
+                                 - 24s - loss: 1.5029 - acc: 0.6502 - val_loss: 0.7854 - val_acc: 0.8316
+                                Epoch 2/10
+                                 - 19s - loss: 0.5990 - acc: 0.8544 - val_loss: 0.4637 - val_acc: 0.8803
+                                Epoch 3/10
+                                 - 19s - loss: 0.4249 - acc: 0.8870 - val_loss: 0.3723 - val_acc: 0.9013
+                                Epoch 4/10
+                                 - 19s - loss: 0.3629 - acc: 0.8999 - val_loss: 0.3331 - val_acc: 0.9089
+                                Epoch 5/10
+                                 - 18s - loss: 0.3313 - acc: 0.9065 - val_loss: 0.3084 - val_acc: 0.9111
+                                Epoch 6/10
+                                 - 18s - loss: 0.3104 - acc: 0.9109 - val_loss: 0.2938 - val_acc: 0.9154
+                                Epoch 7/10
+                                 - 18s - loss: 0.2951 - acc: 0.9156 - val_loss: 0.2834 - val_acc: 0.9187
+                                Epoch 8/10
+                                 - 19s - loss: 0.2826 - acc: 0.9190 - val_loss: 0.2710 - val_acc: 0.9216
+                                Epoch 9/10
+                                 - 18s - loss: 0.2722 - acc: 0.9221 - val_loss: 0.2642 - val_acc: 0.9242
+                                Epoch 10/10
+                                 - 19s - loss: 0.2615 - acc: 0.9247 - val_loss: 0.2545 - val_acc: 0.9273
+                                Baseline Error: 7.27%
+
+#the number of epochs now changed to 30
+# build the model
+model = baseline_model()
+# Fit the model
+#number of epochs increased
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=30, batch_size=200, verbose=2)
+# Final evaluation of the model
+scores = model.evaluate(X_test, y_test, verbose=0)
+print("Baseline Error: %.2f%%" % (100-scores[1]*100))
+
+                          Train on 60000 samples, validate on 10000 samples
+                          Epoch 1/30
+                           - 33s - loss: 1.4958 - acc: 0.6467 - val_loss: 0.7704 - val_acc: 0.8250
+                          Epoch 2/30
+                           - 19s - loss: 0.5878 - acc: 0.8568 - val_loss: 0.4542 - val_acc: 0.8849
+                          Epoch 3/30
+                           - 19s - loss: 0.4180 - acc: 0.8889 - val_loss: 0.3668 - val_acc: 0.9032
+                          Epoch 4/30
+                           - 19s - loss: 0.3579 - acc: 0.9007 - val_loss: 0.3309 - val_acc: 0.9075
+                          Epoch 5/30
+                           - 18s - loss: 0.3269 - acc: 0.9080 - val_loss: 0.3068 - val_acc: 0.9132
+                          Epoch 6/30
+                           - 19s - loss: 0.3069 - acc: 0.9123 - val_loss: 0.2922 - val_acc: 0.9147
+                          Epoch 7/30
+                           - 18s - loss: 0.2921 - acc: 0.9164 - val_loss: 0.2791 - val_acc: 0.9193
+                          Epoch 8/30
+                           - 19s - loss: 0.2790 - acc: 0.9202 - val_loss: 0.2685 - val_acc: 0.9220
+                          Epoch 9/30
+                           - 19s - loss: 0.2684 - acc: 0.9234 - val_loss: 0.2587 - val_acc: 0.9262
+                          Epoch 10/30
+                           - 22s - loss: 0.2586 - acc: 0.9257 - val_loss: 0.2489 - val_acc: 0.9292
+                          Epoch 11/30
+                           - 18s - loss: 0.2479 - acc: 0.9279 - val_loss: 0.2434 - val_acc: 0.9285
+                          Epoch 12/30
+                           - 21s - loss: 0.2390 - acc: 0.9310 - val_loss: 0.2332 - val_acc: 0.9317
+                          Epoch 13/30
+                           - 20s - loss: 0.2294 - acc: 0.9340 - val_loss: 0.2263 - val_acc: 0.9345
+                          Epoch 14/30
+                           - 20s - loss: 0.2201 - acc: 0.9363 - val_loss: 0.2175 - val_acc: 0.9371
+                          Epoch 15/30
+                           - 19s - loss: 0.2120 - acc: 0.9390 - val_loss: 0.2073 - val_acc: 0.9409
+                          Epoch 16/30
+                           - 19s - loss: 0.2029 - acc: 0.9417 - val_loss: 0.2017 - val_acc: 0.9409
+                          Epoch 17/30
+                           - 19s - loss: 0.1949 - acc: 0.9438 - val_loss: 0.1955 - val_acc: 0.9445
+                          Epoch 18/30
+                           - 19s - loss: 0.1871 - acc: 0.9463 - val_loss: 0.1867 - val_acc: 0.9460
+                          Epoch 19/30
+                           - 19s - loss: 0.1796 - acc: 0.9488 - val_loss: 0.1793 - val_acc: 0.9469
+                          Epoch 20/30
+                           - 18s - loss: 0.1724 - acc: 0.9509 - val_loss: 0.1724 - val_acc: 0.9492
+                          Epoch 21/30
+                           - 18s - loss: 0.1660 - acc: 0.9528 - val_loss: 0.1665 - val_acc: 0.9516
+                          Epoch 22/30
+                           - 18s - loss: 0.1596 - acc: 0.9549 - val_loss: 0.1616 - val_acc: 0.9532
+                          Epoch 23/30
+                           - 19s - loss: 0.1535 - acc: 0.9565 - val_loss: 0.1560 - val_acc: 0.9552
+                          Epoch 24/30
+                           - 22s - loss: 0.1476 - acc: 0.9577 - val_loss: 0.1511 - val_acc: 0.9548
+                          Epoch 25/30
+                           - 18s - loss: 0.1424 - acc: 0.9591 - val_loss: 0.1485 - val_acc: 0.9559
+                          Epoch 26/30
+                           - 18s - loss: 0.1368 - acc: 0.9610 - val_loss: 0.1426 - val_acc: 0.9586
+                          Epoch 27/30
+                           - 18s - loss: 0.1318 - acc: 0.9624 - val_loss: 0.1387 - val_acc: 0.9589
+                          Epoch 28/30
+                           - 20s - loss: 0.1271 - acc: 0.9638 - val_loss: 0.1353 - val_acc: 0.9622
+                          Epoch 29/30
+                           - 22s - loss: 0.1232 - acc: 0.9650 - val_loss: 0.1320 - val_acc: 0.9622
+                          Epoch 30/30
+                           - 19s - loss: 0.1190 - acc: 0.9665 - val_loss: 0.1275 - val_acc: 0.9623
+                          Baseline Error: 3.77%
+#BUILDING THE LARGER MODEL
+# define the larger model
+def larger_model():
+	# create model
+	model = Sequential()
+	model.add(Conv2D(30, (5, 5), input_shape=(1, 28, 28), activation='relu'))
+	model.add(MaxPooling2D(pool_size=(2, 2)))
+	model.add(Conv2D(15, (3, 3), activation='relu'))
+	model.add(MaxPooling2D(pool_size=(2, 2)))
+	model.add(Dropout(0.2))
+	model.add(Flatten())
+	model.add(Dense(128, activation='relu'))
+	model.add(Dense(50, activation='relu'))
+	model.add(Dense(num_classes, activation='softmax'))
+	# Compile model
+	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+	return model
+  
+  # build the model
+model = larger_model()
+# Fit the model
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=200)
+# Final evaluation of the model
+scores = model.evaluate(X_test, y_test, verbose=0)
+print("Large CNN Error: %.2f%%" % (100-scores[1]*100))
